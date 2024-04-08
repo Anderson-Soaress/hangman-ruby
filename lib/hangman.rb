@@ -10,6 +10,7 @@ def game
   hidden_word = random_word.split('').map{|letter| letter = '_'}
   lifes = 10
   wrong_guesses = []
+  win = false
 
   until lifes == 0 do 
     puts "\nYou have #{lifes} lifes."
@@ -19,14 +20,17 @@ def game
     puts ''
     guess = gets.chomp
 
-    #guess_the_word() if guess == '1'
-
     if guess == 'guess'
       break
     else
       if random_word.split('').include?(guess)
         puts "\nHit!"
-        random_word.split('').each_with_index {|letter, index| hidden_word[index] = guess if letter == guess } 
+        random_word.split('').each_with_index {|letter, index| hidden_word[index] = guess if letter == guess }
+        if !hidden_word.include?("_")
+          win = true
+          guess = random_word
+          break
+        end
       else 
         puts "\nMissed. You lost a life."
         wrong_guesses << guess
@@ -34,6 +38,13 @@ def game
       end
     end
   end
+
+  puts "\nNo more lifes." if lifes == 0
+  if !win 
+    puts "\nGuess the word:"
+    guess = gets.chomp
+  end
+  guess = random_word ? "Congratulations, you win!" : "You lose, the word is #{random_word}" 
 end
 
-game()
+puts game
