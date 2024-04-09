@@ -1,26 +1,36 @@
+require 'yaml'
+
 def save_game(random_word, hidden_word, lifes, wrong_guesses)
   Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
 
-  filename = "saved_games/game.txt"
-  content = "#{random_word} #{hidden_word} #{lifes} #{wrong_guesses}"
+  filename = "saved_games/saved_game.yml"
 
-  File.open(filename, 'w') do |file|
-    file.puts content
-  end
+  save = { random_word: random_word, hidden_word: hidden_word, lifes: lifes, wrong_guesses: wrong_guesses}
+
+  File.open(filename, 'w') {|file| file.write(save.to_yaml)}
+  
 end
 
-def game
+def game(menu_option)
   words = File.read('google-10000-english-no-swears.txt').split("\n")
 
-  random_word = ''
-  lifes = 10
-  wrong_guesses = []
+  case menu_option
+  when '1'
+    random_word = ''
+    lifes = 10
+    wrong_guesses = []
+    until random_word.length >= 5 && random_word.length <= 12 do
+      random_word = words.sample
+    end
+    hidden_word = random_word.split('').map{|letter| letter = '_'}
+  when '2'
+    saved_infos = YAML.load_file("saved_games/saved_game.yml")
+    random_word = saved_infos[:random_word]
+    hidden_word = saved_infos[:hidden_word]
+    lifes = saved_infos[:lifes]
+    wrong_guesses = saved_infos[:wrong_guesses]
+  end  
 
-  until random_word.length >= 5 && random_word.length <= 12 do
-    random_word = words.sample
-  end
-
-  hidden_word = random_word.split('').map{|letter| letter = '_'}
   invalid_input = true
   win = false
   game_saved = false
@@ -91,10 +101,10 @@ while invalid_input do
   
   case menu_input
   when '1'
-    puts game
+    puts game('1')
     invalid_input = false  
   when '2'
-    
+    puts game('2')
     invalid_input = false
   when '3'
     invalid_input = false
