@@ -1,0 +1,18 @@
+--- !ruby/object:Game
+random_word: relating
+right_guesses:
+- r
+- _
+- _
+- a
+- t
+- _
+- "n"
+- _
+lifes: 5
+wrong_guesses:
+- d
+- c
+- x
+- z
+- m
