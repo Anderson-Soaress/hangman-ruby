@@ -1,0 +1,15 @@
+--- !ruby/object:Game
+random_word: geneva
+right_guesses:
+- g
+- e
+- _
+- e
+- _
+- _
+lifes: 7
+wrong_guesses:
+- z
+- s
+- q
+win: false

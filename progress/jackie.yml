@@ -1,0 +1,22 @@
+--- !ruby/object:Game
+random_word: jackie
+right_guesses:
+- _
+- _
+- c
+- k
+- i
+- e
+lifes: 0
+wrong_guesses:
+- s
+- z
+- v
+- b
+- w
+- r
+- t
+- "y"
+- u
+- l
+win: false

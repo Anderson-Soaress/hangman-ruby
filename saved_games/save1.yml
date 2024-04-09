@@ -1,0 +1,16 @@
+--- !ruby/object:Game
+random_word: enjoyed
+right_guesses:
+- e
+- _
+- _
+- _
+- "y"
+- e
+- d
+lifes: 7
+wrong_guesses:
+- h
+- s
+- z
+win: false

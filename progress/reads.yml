@@ -1,18 +1,14 @@
 --- !ruby/object:Game
-random_word: relating
+random_word: reads
 right_guesses:
 - r
+- e
 - _
 - _
-- a
-- t
-- _
-- "n"
-- _
-lifes: 5
+- s
+lifes: 7
 wrong_guesses:
-- d
-- c
+- b
 - x
 - z
-- m
+win: true

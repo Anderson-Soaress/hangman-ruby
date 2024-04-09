@@ -1,0 +1,15 @@
+--- !ruby/object:Game
+random_word: indiana
+right_guesses:
+- i
+- _
+- _
+- i
+- _
+- _
+- _
+lifes: 8
+wrong_guesses:
+- s
+- z
+win: true

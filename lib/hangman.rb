@@ -2,19 +2,30 @@ require 'yaml'
 
 class Game
 
-  attr_accessor :random_word, :right_guesses, :lifes, :wrong_guesses
+  attr_accessor :random_word, :right_guesses, :lifes, :wrong_guesses, :win
 
   def initialize
     @random_word = generate_word()
     @right_guesses = random_word.split('').map{|letter| letter = '_'}
     @lifes = 10
     @wrong_guesses = []
+    @win = false
   end
 
   def save_game
     Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
 
-    filename = "saved_games/save_test.yml"
+    puts "\nType file name:"
+    name = gets.chomp
+    filename = "saved_games/#{name}.yml"
+
+    File.open(filename, 'w') {|file| file.write(self.to_yaml)}
+  end
+
+  def save_progress
+    Dir.mkdir('progress') unless Dir.exist?('progress')
+
+    filename = "progress/#{random_word}.yml"
 
     File.open(filename, 'w') {|file| file.write(self.to_yaml)}
   end
@@ -32,7 +43,16 @@ class Game
     puts "\nNo more lifes." if lifes == 0
     puts "\nGuess the word:"
     guess = gets.chomp
-    guess == random_word ? "Congratulations, you win!" : "You lose, the word is #{random_word}."
+    if guess == random_word  
+      puts "Congratulations, you win!"
+      self.win = true
+      save_progress
+
+    else 
+      puts "You lose, the word is #{random_word}."
+      self.win = false
+      save_progress
+    end
   end
 
   def guess_letter(guess)
@@ -72,14 +92,14 @@ Or type a letter:"
 
       case guess
       when '1'
-        puts guess_word()
+        guess_word()
         break
       when '2'
         save_game()
         break
       else
         guess_letter(guess)
-        puts guess_word() if lifes == 0
+        guess_word() if lifes == 0
       end
     end
   end
@@ -88,6 +108,7 @@ end
 puts "---HANGMAN---"
 puts "1- New game"
 puts "2- Continue game"
+puts "3- Progress"
 puts "Any other button to close"
 input_menu = gets.chomp
 
@@ -96,6 +117,49 @@ when '1'
   game = Game.new
   game.play_game
 when '2'
-  game = YAML.load_file('saved_games/save_test.yml', permitted_classes: [Game])
-  game.play_game
+  if Dir.empty?('saved_games')
+    puts "You don't have saved games."
+    return true
+  end
+
+  num = 1
+  puts "\nSaved games:"
+  Dir.foreach('saved_games') do |filename|
+    next if filename == '.' or filename == '..'
+    game = YAML.load_file("saved_games/#{filename}", permitted_classes: [Game])
+    puts "#{num}- Progress: #{game.right_guesses.join("")} | Lifes: #{game.lifes} | File name: #{filename}"
+    num += 1
+  end
+
+  loop do
+    puts "\nType the file name to play"
+    name = gets.chomp
+    if File.exist?("saved_games/#{name}")
+      game = YAML.load_file("saved_games/#{name}", permitted_classes: [Game])
+      game.play_game
+      break
+    else 
+      puts "This file don't exists."
+    end
+  end
+when '3'
+  puts "\nProgress"
+
+  puts "\nGames won: "
+  Dir.foreach('progress') do |filename|
+    next if filename == '.' or filename == '..'
+    game = YAML.load_file("progress/#{filename}", permitted_classes: [Game])
+    if game.win 
+      puts "Word: #{game.random_word} | Lifes remaining: #{game.lifes}"
+    end
+  end
+
+  puts "\nGames losed: "
+  Dir.foreach('progress') do |filename|
+    next if filename == '.' or filename == '..'
+    game = YAML.load_file("progress/#{filename}", permitted_classes: [Game])
+    if !game.win 
+      puts "Word: #{game.random_word} | Right guesses: #{game.right_guesses.join("")}"
+    end
+  end
 end
